@@ -43,19 +43,4 @@ commands:
         kind: build
       parallel: false
     id: prepare-dependencies
-  - exec:
-      commandLine: python examples/test_steps.py
-      component: python
-      group:
-        isDefault: true
-        kind: run
-      workingDir: '${PROJECT_SOURCE}'
-    id: run-demo
-  - exec:
-      commandLine: bash
-      component: argo
-      workingDir: '${PROJECT_SOURCE}'
-      env:
-      - name: PS1
-        value: '#'
-    id: exec-argo-shell
+
