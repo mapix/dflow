@@ -1,0 +1,61 @@
+schemaVersion: 2.1.0
+metadata:
+  name: dflow
+components:
+  - container:
+      args:
+        - tail
+        - '-f'
+        - /dev/null
+      image: 'registry.access.redhat.com/ubi9/python-39:latest'
+      mountSources: true
+      sourceMapping: /projects
+    name: python
+  - container:
+      args:
+        - tail
+        - '-f'
+        - /dev/null
+      image: 'mapix/miniconda-with-argo:4.12.0-1'
+      sourceMapping: /projects
+    name: argo
+commands:
+  - exec:
+      commandLine: 'pip install -r requirements.txt --index https://mirrors.aliyun.com/pypi/simple/'
+      component: python
+      group:
+        kind: build
+      workingDir: '${PROJECT_SOURCE}'
+    id: pip-install-requirements
+  - exec:
+      commandLine: python setup.py develop
+      component: python
+      group:
+        kind: build
+      workingDir: '${PROJECT_SOURCE}'
+    id: setup-develop-mode
+  - composite:
+      commands:
+        - pip-install-requirements
+        - setup-develop-mode
+      group:
+        isDefault: true
+        kind: build
+      parallel: false
+    id: prepare-dependencies
+  - exec:
+      commandLine: python examples/test_steps.py
+      component: python
+      group:
+        isDefault: true
+        kind: run
+      workingDir: '${PROJECT_SOURCE}'
+    id: run-demo
+  - exec:
+      commandLine: bash
+      component: argo
+      workingDir: '${PROJECT_SOURCE}'
+      env:
+      - name: PS1
+        value: '#'
+    id: exec-argo-shell
