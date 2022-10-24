@@ -2,5 +2,6 @@
     "recommendations": [
       "genuitecllc.codetogether",
         "ms-python.python",
+       "ms-toolsai.jupyter",
     ]
   }
