@@ -10,6 +10,9 @@ components:
       image: 'registry.access.redhat.com/ubi9/python-39:latest'
       mountSources: true
       sourceMapping: /projects
+      env:
+       - name: ARGO_SERVER
+         value: 'ARGO_SERVER=argo-server.argo:2746'
     name: python
   - container:
       args:
